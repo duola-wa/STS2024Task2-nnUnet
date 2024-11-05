@@ -10,7 +10,7 @@ pip install -e .
 ```
 ### 2. Pipeline 
 #### 2.1. 下载数据
-下载 STS 数据集 https://www.codabench.org/competitions/3024/#/pages-tab
+下载 STS 数据集 https://www.codabench.org/competitions/3025/
 
 #### 2.2. 模型训练
 第一步先训练象限分割模型
@@ -18,30 +18,28 @@ pip install -e .
 ```
 python process/FDI2Qua.py
 ```
-把2d数据转换成nnUnet可以训练的形式
-```
-python process/Dataset411_Ruyastage0.py
-```
+
 训练模型
 ```
-nnUNetv2_plan_and_preprocess -d 411 --verify_dataset_integrity
-nnUNetv2_train 411 2d all --npz -tr nnUNetTrainerNoDA
+nnUNet_plan_and_preprocess -t 313 --verify_dataset_integrity
+nnUNet_train 3d_lowres nnUNetTrainerV2 313 all --npz 
 ```
 
 第二步训练象限内牙齿分割模型
 更改配置文件，保存不同阶段的权重，方便后续筛选伪标签。
-在 nnUNet/nnunetv2/training/nnUNetTrainer/nnUetTrainer.py 的第 1142 行添加代码，以保存训练 150 个epoch期间 1/3、2/3、3/3 总迭代次数的checkpoint
+在 nnUNet-master/nnunet/training/network_training/network_trainer.py 的第 486 行添加代码，以保存训练 300 个epoch期间 1/3、2/3、3/3 总迭代次数的checkpoint
 ```
-self.save_checkpoint(join(self.output_folder, str(current_epoch + 1) + '.pth'))
+if (self.epoch + 1) in [int(1 / 3 * self.max_num_epochs), int(2 / 3 * self.max_num_epochs),int(self.max_num_epochs-1)]:
+  self.save_checkpoint(join(self.output_folder, str(self.epoch + 1) + '.model'))
 ```
 把数据处理成第二阶段训练的形式，即0把每个原始数据切分成四个象限的数据。
 ```
-python process/dataPrepareForSegInTooth.py        
+python process/preparefor2.py        
 ```
 使用 nnUNet 进行自动预处理并训练教师（或学生）模型。
 ```
-nnUNetv2_plan_and_preprocess -d 412 --verify_dataset_integrity
-nnUNetv2_train 412 2d all --npz
+nnUNet_plan_and_preprocess -t 312 --verify_dataset_integrity
+nnUNet_train 3d_fullres nnUNetTrainerV2 312 all --npz 
 ```
 #### 2.3. 选择性再训练策略
 使用已保存的检查点权重的模型进行推理。
