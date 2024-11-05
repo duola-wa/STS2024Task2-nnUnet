@@ -34,7 +34,7 @@ nnUNet_train 3d_lowres nnUNetTrainerV2 313 all --npz
 if (self.epoch + 1) in [int(1 / 3 * self.max_num_epochs), int(2 / 3 * self.max_num_epochs),int(self.max_num_epochs-1)]:
   self.save_checkpoint(join(self.output_folder, str(self.epoch + 1) + '.model'))
 ```
-把数据处理成第二阶段训练的形式，即0把每个原始数据切分成四个象限的数据。
+把数据处理成第二阶段训练的形式，即把每个原始数据切分成四个象限的数据。
 ```
 python process/preparefor2.py        
 ```
