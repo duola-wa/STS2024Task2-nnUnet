@@ -27,6 +27,7 @@ nnUNet_train 3d_lowres nnUNetTrainerV2 313 all --npz
 ```
 
 第二步训练象限内牙齿分割模型
+
 更改配置文件，保存不同阶段的权重，方便后续筛选伪标签。
 在 nnUNet-master/nnunet/training/network_training/network_trainer.py 的第 486 行添加代码，以保存训练 300 个epoch期间 1/3、2/3、3/3 总迭代次数的checkpoint
 ```
