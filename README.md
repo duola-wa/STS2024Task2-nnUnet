@@ -1,4 +1,4 @@
-# 针对MICCAI STS 2024 Challenge Task 1: Tooth Instance Segmentation in 2D Panoramic X-ray Images的nnUnet再训练方案
+# 针对MICCAI STS 2024 Challenge Task 2的nnUnet再训练方案
 
 ### 1. nnUNet 配置
 安装Install.   
